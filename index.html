@@ -120,6 +120,18 @@
     <label for="providedInput">How many <span id="providedLabel">sentences</span> provided:</label>
     <input type="number" id="providedInput" min="0" placeholder="Enter amount provided">
 
+    <label for="weightSelect1">Choose a Transmutation Minimum:</label>
+    <select id="weightSelect1">
+        <option value="30">70</option>
+        <option value="40" selected>60</option>
+        <option value="50">50</option>
+        <option value="60">40</option>
+        <option value="70">30</option>
+        <option value="80">20</option>
+        <option value="90">10</option>
+        <option value="100">0</option>
+    </select>
+
     <label for="totalScoreInput">Total Score:</label>
     <input type="number" id="totalScoreInput" min="0" placeholder="Enter total score">
 
@@ -175,6 +187,7 @@
       const needed = parseFloat(document.getElementById("neededInput").value);
       const provided = parseFloat(document.getElementById("providedInput").value);
       const total = parseFloat(document.getElementById("totalScoreInput").value);
+      const weight1 = parseInt(document.getElementById("weightSelect1").value);
 
       if (isNaN(needed) || isNaN(provided) || isNaN(total) || needed === 0) {
         alert("Please enter valid numbers. 'Needed' must be greater than 0.");
@@ -182,9 +195,10 @@
       }
 
       const score = (provided / needed) * total;
+      const score1 = (score / 100) * weight1 + (100 - weight1);
       document.getElementById("finalResult").innerText = `Final Result: ${score.toFixed(2)}`;
 
-      finalScore2 = score;
+      finalScore2 = score1;
       updateComparison();
     }
 
