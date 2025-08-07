@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Essay Calculator by Sir Sam</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background: #f0f0f0;
+      max-width: 700px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+    }
+    section {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+    input[type="number"], select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    a:link, a:visited {
+      background-color: #161515;
+      color: white;
+      padding: 14px 25px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+    }
+    a:hover, a:active {
+      background-color: rgb(0, 0, 0);
+    }
+    .output {
+      margin-top: 10px;
+      background: #f9f9f9;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+    .tool-buttons button {
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Essay Calculator by Sir Sam</h2>
+
+  <!-- Section 1: Grammar + AI Checker Tool -->
+  <section>
+    <h3>1. Grammar & AI Checker</h3>
+
+    <label for="grammarScore">Grammar Checker</label>
+    <input type="number" id="grammarScore" min="0" max="100" placeholder="Enter Grammar Score">
+
+    <label for="aiScore">AI Checker</label>
+    <input type="number" id="aiScore" min="0" max="100" placeholder="Enter AI Score">
+
+    <label>Human Checker (100 - AI Checker):</label>
+    <div class="output" id="humanChecker">--</div>
+
+    <label>Average Score (Grammar + Human / 2):</label>
+    <div class="output" id="averageScore">--</div>
+
+    <label for="weightSelect">Choose a Transmutation Minimum:</label>
+    <select id="weightSelect">
+        <option value="30">70</option>
+        <option value="40" selected>60</option>
+        <option value="50">50</option>
+        <option value="60">40</option>
+        <option value="70">30</option>
+        <option value="80">20</option>
+        <option value="90">10</option>
+        <option value="100">0</option>
+    </select>
+
+    <label>Final Computation:</label>
+    <div class="output" id="finalScore">--</div>
+
+    <button onclick="calculateGrammarAI()">Calculate</button>
+
+    <div class="tool-buttons">
+      <label style="margin-top: 20px;">Use these tools before calculating:</label><br>
+      <a href="https://quillbot.com/grammar-check" target="_blank">Grammar Checker</a>
+      <a href="https://www.zerogpt.com/" target="_blank">AI Checker</a>
+    </div>
+  </section>
+
+  <!-- Section 2: Sentence/Word Score Tool -->
+  <section>
+    <h3>2. Sentence/Word Score</h3>
+
+    <label for="typeSelect">Choose Type:</label>
+    <select id="typeSelect">
+      <option value="Sentences">Sentences</option>
+      <option value="Words">Words</option>
+    </select>
+
+    <label for="neededInput">How many <span id="neededLabel">sentences</span> needed:</label>
+    <input type="number" id="neededInput" min="1" placeholder="Enter amount needed">
+
+    <label for="providedInput">How many <span id="providedLabel">sentences</span> provided:</label>
+    <input type="number" id="providedInput" min="0" placeholder="Enter amount provided">
+
+    <label for="totalScoreInput">Total Score:</label>
+    <input type="number" id="totalScoreInput" min="0" placeholder="Enter total score">
+
+    <button onclick="computeSentenceWord()">Calculate</button>
+
+    <div class="output" id="finalResult">Final Result: --</div>
+
+    <label style="margin-top: 20px;">Final Score:</label>
+    <div class="output" id="comparisonResult">--</div>
+  </section>
+
+  <script>
+    // Grammar + AI Checker logic
+    let finalScore1 = null;
+    let finalScore2 = null;
+
+    function calculateGrammarAI() {
+      const grammarScore = parseFloat(document.getElementById("grammarScore").value);
+      const aiScore = parseFloat(document.getElementById("aiScore").value);
+      const weight = parseInt(document.getElementById("weightSelect").value);
+
+      if (isNaN(grammarScore) || isNaN(aiScore)) {
+        alert("Please input valid numbers for both Grammar and AI Checker.");
+        return;
+      }
+
+      const humanScore = 100 - aiScore;
+      document.getElementById("humanChecker").innerText = humanScore;
+
+      const average = (grammarScore + humanScore) / 2;
+      document.getElementById("averageScore").innerText = average.toFixed(2);
+
+      const final = (average / 100) * weight + (100 - weight);
+      document.getElementById("finalScore").innerText = final.toFixed(2);
+
+      finalScore1 = final;
+      updateComparison();
+    }
+
+    // Sentence/Word type dynamic label change
+    const typeSelect = document.getElementById("typeSelect");
+    const neededLabel = document.getElementById("neededLabel");
+    const providedLabel = document.getElementById("providedLabel");
+
+    typeSelect.addEventListener("change", function () {
+      const selected = this.value.toLowerCase();
+      neededLabel.textContent = selected;
+      providedLabel.textContent = selected;
+    });
+
+    // Sentence/Word score logic
+    function computeSentenceWord() {
+      const needed = parseFloat(document.getElementById("neededInput").value);
+      const provided = parseFloat(document.getElementById("providedInput").value);
+      const total = parseFloat(document.getElementById("totalScoreInput").value);
+
+      if (isNaN(needed) || isNaN(provided) || isNaN(total) || needed === 0) {
+        alert("Please enter valid numbers. 'Needed' must be greater than 0.");
+        return;
+      }
+
+      const score = (provided / needed) * total;
+      document.getElementById("finalResult").innerText = `Final Result: ${score.toFixed(2)}`;
+
+      finalScore2 = score;
+      updateComparison();
+    }
+
+    // New: Comparison Logic
+    function updateComparison() {
+      const comparisonDiv = document.getElementById("comparisonResult");
+
+      if (finalScore1 !== null && finalScore2 !== null && finalScore1 !== 0) {
+        const percentage = (finalScore2 / 100) * finalScore1;
+        comparisonDiv.innerText = `${percentage.toFixed(2)}`;
+      } else {
+        comparisonDiv.innerText = "--";
+      }
+    }
+  </script>
+
+</body>
+</html>
